@@ -13,3 +13,4 @@ python-dotenv
 streamlit>=1.28.0
 torch
 torchvision
+langchain-ollama

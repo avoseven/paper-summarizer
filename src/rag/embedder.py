@@ -23,3 +23,9 @@ def embed_documents(documents: List[Document]) -> List[List[float]]:
     # Vector化
     vectors = embeddings.embed_documents(texts)
     return vectors
+
+def get_embeddings() -> HuggingFaceEmbeddings:
+    """
+    Embeddingモデルを返す（vectorstore.py用）
+    """
+    return get_embedding_model()

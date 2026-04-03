@@ -7,6 +7,7 @@ langchain-huggingface
 sentence-transformers
 langchain-core
 chromadb
+langchain-chroma
 pypdf
 python-dotenv
 streamlit>=1.28.0

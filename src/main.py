@@ -2,6 +2,7 @@
 import streamlit as st
 from rag.loader import load_pdf_from_bytes
 from rag.splitter import split_documents
+from rag.embedder import embed_documents
 
 st.title("論文要約ツール")
 
@@ -14,6 +15,12 @@ if uploaded_file is not None:
 
         # 2. チャンク化
         chunks = split_documents(documents)
+        
+        # 3. ベクトル化
+        vectors = embed_documents(chunks)
+        print(f"チャンク数: {len(chunks)}, ベクトル数: {len(vectors)}")
+        print(f"1つのベクトルの次元数: {len(vectors[0])}")
+    
     # ここで documents を表示したり、次の処理（splitterなど）に渡す
     st.success(f"読み込み完了！ページ数: {len(documents)}, チャンク数: {len(chunks)}")
-    
+

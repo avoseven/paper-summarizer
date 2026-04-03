@@ -1,5 +1,6 @@
 # requirements.txt
 langchain
+langchain-text-splitters
 langchain-openai
 langchain-community
 langchain-core

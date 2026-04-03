@@ -18,3 +18,10 @@ def create_vectorstore(documents: List[Document], persist_directory: str = "./ch
         persist_directory=persist_directory,
     )
     return vectorstore
+
+def search_similar_chunks(vectorstore, query: str, k: int = 5):
+    """
+    質問に似たチャンクを検索する
+    """
+    results = vectorstore.similarity_search(query, k=k)
+    return results

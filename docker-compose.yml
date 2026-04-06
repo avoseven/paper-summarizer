@@ -4,9 +4,12 @@ version: '3.8'
 services:
   summarizer:
     build: .
-    ports:
-      - "8501:8501"
+    network_mode: host  # ホストのネットワークを使用
+    #ports:
+    #  - "8501:8501"
     volumes:
       - .:/app              # ルートディレクトリ全体をマウント
       #- ./src:/app/src
-      - .env:/app/.env  # 後で追加
+      #- .env:/app/.env  # 後で追加
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"  # ホストのIPを解決

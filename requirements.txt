@@ -1,8 +1,16 @@
 # requirements.txt
 langchain
+langchain-text-splitters
 langchain-openai
 langchain-community
+langchain-huggingface
+sentence-transformers
+langchain-core
 chromadb
+langchain-chroma
 pypdf
 python-dotenv
 streamlit>=1.28.0
+torch
+torchvision
+langchain-ollama

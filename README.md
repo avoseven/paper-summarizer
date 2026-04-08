@@ -39,7 +39,8 @@ cp .env.example .env
 必要に応じて、以下の環境変数を設定してください。
 ```
 
-- `OLLAMA_BASE_URL`: OllamaサーバーのURL（例: `http://host.docker.internal:11434`）
+- `OLLAMA_BASE_URL`: OllamaサーバーのURL（例: `http://host.docker.internal:11434`）  
+  ※ホスト側でOllamaを起動しておく必要があります。
 - その他、必要に応じて追加
 
 ### 3. Docker Compose で起動
@@ -67,7 +68,7 @@ src/
 │ ├── vectorstore.py # ベクトルDB（ChromaDB）の操作
 │ └── summarizer.py # LLMによる要約
 ├── main.py # Streamlit UI
-└── config.py # 設定管理
+└── ... # その他のファイル（将来的に config.py を追加予定）
 ```
 
 ### RAGパイプライン
@@ -99,18 +100,18 @@ clear_vectorstore()
 
 Streamlit UI からも、実行時に自動的にクリアされるようになっています。
 
-## テストの実行
+## テストの実行（予定）
 
-テストはまだ実装されていませんが、以下のコマンドで実行する予定です。
+テストはまだ実装されていませんが、将来的には以下のコマンドで実行する予定です。
+
 ```bash
 docker compose run --rm app python -m pytest
 ```
 
-## CI
+## CI（予定）
 
-GitHub Actions によるCIが設定されています。  
-プッシュ時に自動テストが実行されます。
-GitHub Actions で自動テストを実行する予定
+GitHub Actions によるCIはまだ設定されていませんが、  
+将来的にはプッシュ時に自動テストを実行する予定です。
 
 -------------------------------------------------------------------
 

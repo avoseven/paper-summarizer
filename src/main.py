@@ -21,9 +21,17 @@ if uploaded_file is not None:
 
         # 2. チャンク化
         chunks = split_documents(documents)
-        
+
+        #from rag.vectorstore import get_vectorstore_count
+        # 実行前のカウント
+        #before_count = get_vectorstore_count()
+
         # 3. ベクトルDBに保存（RAG用）
         vectorstore = create_vectorstore(chunks)
+
+        # 実行後のカウント
+        #after_count = get_vectorstore_count()
+        #print(f"Before: {before_count}, After: {after_count}")
 
     st.success("読み込み完了！")
 
@@ -68,34 +76,3 @@ if uploaded_file is not None:
         st.success(f"要約完了！ 所要時間: {elapsed_time:.2f}秒")
         st.subheader("要約結果")
         st.write(summary)
-
-'''
-    # 要約実行
-    if st.button("要約を実行"):
-        with st.spinner("要約中..."):
-            summary, elapsed_time = summarize_chunks_with_time(
-                chunks, 
-                model_name=model_choice,
-                num_predict=output_length
-            )
-        
-        st.success(f"要約完了！ 所要時間: {elapsed_time:.2f}秒")
-        st.subheader("要約結果")
-        st.write(summary)
-        
-        # 時間の記録（セッション状態に保存）
-        if "time_records" not in st.session_state:
-            st.session_state.time_records = []
-        
-        st.session_state.time_records.append({
-            "model": model_choice,
-            "output_length": output_length,
-            "time": elapsed_time
-        })
-        
-        # 時間比較の表示
-        if len(st.session_state.time_records) > 1:
-            st.subheader("時間比較")
-            for i, record in enumerate(st.session_state.time_records):
-                st.write(f"{i+1}. モデル: {record['model']}, 出力長: {record['output_length']}, 時間: {record['time']:.2f}秒")
-'''

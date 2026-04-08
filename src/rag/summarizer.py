@@ -17,39 +17,6 @@ def get_llm(model_name: str = "llama3.2:1b", num_predict: int = 512) -> OllamaLL
     )
     return llm
 
-'''
-def summarize_chunks_with_time(
-    chunks: List[Document], 
-    model_name: str = "llama3.1:8b", 
-    num_predict: int = 512
-) -> Tuple[str, float]:
-    """
-    チャンクを要約し、要約時間を計測する
-    """
-    print(f"Using model: {model_name}")  # デバッグ用
-    llm = get_llm(model_name, num_predict)
-    
-    # チャンクのテキストを結合
-    text = "\n\n".join([chunk.page_content for chunk in chunks])
-    
-    # プロンプトを作成
-    prompt = f"""
-    以下の論文の内容を日本語で要約してください。
-    要約は「背景」「手法」「結果」「結論」の4つのセクションに分けて記述してください。
-
-    論文の内容:
-    {text}
-    """
-    
-    # 時間計測
-    start_time = time.time()
-    summary = llm.invoke(prompt)
-    end_time = time.time()
-    
-    elapsed_time = end_time - start_time
-    return summary, elapsed_time
-'''
-
 def summarize_with_rag(
     vectorstore, 
     query: str, 

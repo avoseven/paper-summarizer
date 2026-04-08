@@ -3,14 +3,32 @@ import streamlit as st
 from rag.loader import load_pdf_from_bytes
 from rag.splitter import split_documents
 from rag.vectorstore import create_vectorstore
-#from rag.summarizer import summarize_chunks_with_time
 from rag.summarizer import summarize_with_rag
 
-#import time
+# RAGパラメータの調整
+st.subheader("RAGパラメータ調整")
 
-#st.title("論文要約ツール（時間計測比較）")
+k = st.slider(
+    "検索するチャンク数 (k)",
+    min_value=3,
+    max_value=9,
+    value=3,
+    step=3,
+    help="関連文書を何個検索するか"
+)
+
+chunk_size = st.slider(
+    "チャンクサイズ",
+    min_value=1000,
+    max_value=2000,
+    value=1000,
+    step=500,
+    help="テキストを分割するサイズ（文字数）"
+)
+
 st.title("論文要約ツール（RAG版）")
 
+# PDFアップロード
 uploaded_file = st.file_uploader("論文PDFをアップロード", type="pdf")
 
 if uploaded_file is not None:
@@ -20,18 +38,10 @@ if uploaded_file is not None:
         documents = load_pdf_from_bytes(uploaded_file.getvalue(), uploaded_file.name)
 
         # 2. チャンク化
-        chunks = split_documents(documents)
-
-        #from rag.vectorstore import get_vectorstore_count
-        # 実行前のカウント
-        #before_count = get_vectorstore_count()
+        chunks = split_documents(documents, chunk_size=chunk_size)
 
         # 3. ベクトルDBに保存（RAG用）
         vectorstore = create_vectorstore(chunks)
-
-        # 実行後のカウント
-        #after_count = get_vectorstore_count()
-        #print(f"Before: {before_count}, After: {after_count}")
 
     st.success("読み込み完了！")
 
@@ -70,7 +80,7 @@ if uploaded_file is not None:
     if st.button("要約を実行"):
         with st.spinner("要約中..."):
             summary, elapsed_time = summarize_with_rag(
-                vectorstore, query, model_name=model_choice, num_predict=output_length
+                vectorstore, query, model_name=model_choice, num_predict=output_length, k=k
             )
         
         st.success(f"要約完了！ 所要時間: {elapsed_time:.2f}秒")

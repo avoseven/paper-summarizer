@@ -5,6 +5,8 @@ from rag.splitter import split_documents
 from rag.vectorstore import create_vectorstore
 from rag.summarizer import summarize_with_rag
 
+st.title("論文要約ツール（RAG版）")
+
 # RAGパラメータの調整
 st.subheader("RAGパラメータ調整")
 
@@ -26,24 +28,34 @@ chunk_size = st.slider(
     help="テキストを分割するサイズ（文字数）"
 )
 
-st.title("論文要約ツール（RAG版）")
+# 比較設定
+col1, col2 = st.columns(2)
+with col1:
+    model_choice = st.selectbox(
+        "モデル選択",
+        [
+            "llama3.2:1b",      # 最速（開発用）
+            #"llama3.2:3b",      # バランス（開発用）
+            "llama3.1:8b",      # 高精度（最終確認用）
+            "llama3.1:8b-instruct-q4_1"  # 指示追従型（比較用）
+        ],
+        index=0
+    )
+with col2:
+    #output_length = st.slider("出力長（トークン数）", 256, 1024, 512)
+    output_length = st.slider(
+        "出力長（トークン数）",
+        min_value=256,
+        max_value=1024,
+        value=512,
+        step=128,
+        help="短いほど速いが簡潔、長いほど遅いが詳細"
+    )
 
 # PDFアップロード
 uploaded_file = st.file_uploader("論文PDFをアップロード", type="pdf")
 
 if uploaded_file is not None:
-    with st.spinner("論文を読み込み中..."):
-        # 1. PDF読み込み
-        # バイトデータからPDFを読み込む
-        documents = load_pdf_from_bytes(uploaded_file.getvalue(), uploaded_file.name)
-
-        # 2. チャンク化
-        chunks = split_documents(documents, chunk_size=chunk_size)
-
-        # 3. ベクトルDBに保存（RAG用）
-        vectorstore = create_vectorstore(chunks)
-
-    st.success("読み込み完了！")
 
     # 質問入力
     query = st.text_input(
@@ -51,33 +63,22 @@ if uploaded_file is not None:
         value="この論文の内容を要約してください"
     )
 
-    # 比較設定
-    #st.subheader("比較設定")
-    col1, col2 = st.columns(2)
-    with col1:
-        model_choice = st.selectbox(
-            "モデル選択",
-            [
-                "llama3.2:1b",      # 最速（開発用）
-                #"llama3.2:3b",      # バランス（開発用）
-                "llama3.1:8b",      # 高精度（最終確認用）
-                "llama3.1:8b-instruct-q4_1"  # 指示追従型（比較用）
-            ],
-            index=0
-        )
-    with col2:
-        #output_length = st.slider("出力長（トークン数）", 256, 1024, 512)
-        output_length = st.slider(
-            "出力長（トークン数）",
-            min_value=256,
-            max_value=1024,
-            value=512,
-            step=128,
-            help="短いほど速いが簡潔、長いほど遅いが詳細"
-        )
-
     # 要約実行
     if st.button("要約を実行"):
+
+        with st.spinner("論文を読み込み中..."):
+            # 1. PDF読み込み
+            # バイトデータからPDFを読み込む
+            documents = load_pdf_from_bytes(uploaded_file.getvalue(), uploaded_file.name)
+
+            # 2. チャンク化
+            chunks = split_documents(documents, chunk_size=chunk_size)
+
+            # 3. ベクトルDBに保存（RAG用）
+            vectorstore = create_vectorstore(chunks)
+
+        st.success("読み込み完了！")
+
         with st.spinner("要約中..."):
             summary, elapsed_time = summarize_with_rag(
                 vectorstore, query, model_name=model_choice, num_predict=output_length, k=k

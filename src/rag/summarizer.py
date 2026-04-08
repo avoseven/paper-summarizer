@@ -21,7 +21,8 @@ def summarize_with_rag(
     vectorstore, 
     query: str, 
     model_name: str = "llama3.2:1b", 
-    num_predict: int = 512
+    num_predict: int = 512,
+    k: int = 3
 ) -> Tuple[str, float]:
     """
     RAGで関連箇所を検索し、要約する
@@ -29,9 +30,14 @@ def summarize_with_rag(
     llm = get_llm(model_name, num_predict)
     
     # 関連文書を検索（上位3件）
-    retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
+    #retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
+    retriever = vectorstore.as_retriever(search_kwargs={"k": k})
     #relevant_docs = retriever.get_relevant_documents(query)
     relevant_docs = retriever.invoke(query)  # get_relevant_documents → invoke
+    #print("=== Retrieved Chunks ===")
+    #for i, doc in enumerate(relevant_docs):
+    #    print(f"[{i}] {doc.page_content[:100]}...")
+    #print("========================")
     
     # 検索結果を結合
     context = "\n\n".join([doc.page_content for doc in relevant_docs])

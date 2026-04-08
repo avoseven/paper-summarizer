@@ -4,7 +4,11 @@ from langchain_core.documents import Document
 from typing import List
 from rag.embedder import get_embeddings  # embedder.pyを経由
 
-def create_vectorstore(documents: List[Document], persist_directory: str = "./chroma_db", clear_existing: bool = True):
+def create_vectorstore(
+        documents: List[Document],
+        persist_directory: str = "./chroma_db",
+        clear_existing: bool = True,
+    ):
     """
     ベクトルDBを作成し、ドキュメントを保存する
     """

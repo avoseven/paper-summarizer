@@ -6,6 +6,8 @@ from typing import List
 import tempfile
 import os
 
+from .preprocessor import preprocess_documents
+
 def load_pdf_from_path(file_path: str) -> List[Document]:
     """
     PDFファイルのパスからドキュメントを読み込む
@@ -25,7 +27,12 @@ def load_pdf_from_bytes(file_bytes: bytes, filename: str = "uploaded.pdf") -> Li
 
     try:
         documents = load_pdf_from_path(temp_path)
-        return documents
+
+        # 前処理
+        processed_documents = preprocess_documents(documents)
+
+        #return documents
+        return processed_documents
     finally:
         # 一時ファイルを削除
         os.unlink(temp_path)

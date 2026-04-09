@@ -47,10 +47,10 @@ def setup_ui():
         #output_length = st.slider("出力長（トークン数）", 256, 1024, 512)
         output_length = st.slider(
             "出力長（トークン数）",
-            min_value=256,
-            max_value=1024,
-            value=512,
-            step=256,
+            min_value=512,
+            max_value=2048,
+            value=1024,
+            step=512,
             help="短いほど速いが簡潔、長いほど遅いが詳細"
         )
 

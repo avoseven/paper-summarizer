@@ -34,23 +34,41 @@ def summarize_with_rag(
     retriever = vectorstore.as_retriever(search_kwargs={"k": k})
     #relevant_docs = retriever.get_relevant_documents(query)
     relevant_docs = retriever.invoke(query)  # get_relevant_documents → invoke
-    #print("=== Retrieved Chunks ===")
-    #for i, doc in enumerate(relevant_docs):
-    #    print(f"[{i}] {doc.page_content[:100]}...")
-    #print("========================")
+    print("=== Retrieved Chunks ===")
+    for i, doc in enumerate(relevant_docs):
+        #print(f"[{i}] {doc.page_content[:100]}...")
+        #print(f"[{i}] {doc.page_content[900:]}...")
+        print(f"[{i}] {doc.page_content[:]}...")
+    print("========================")
     
     # 検索結果を結合
     context = "\n\n".join([doc.page_content for doc in relevant_docs])
     
     # プロンプトを作成（トークン数指定）
     prompt = f"""
-    以下の論文の関連箇所を元に、質問に答えてください。
-    回答は「背景」「手法」「結果」「結論」の4つのセクションに分けて、{num_predict}トークン以内で記述してください。
+    あなたは論文の要約を日本語で行う専門家です。
+    以下の論文の一部を読み、指定された形式で要約してください。
 
-    質問: {query}
-
-    関連箇所:
+    【入力テキスト】
     {context}
+
+    【出力形式】
+    以下の4つのセクションのみを記述してください。見出しや番号は含めないでください。
+
+    - 背景: 研究の背景・目的・問題設定を簡潔に説明してください。
+    - 手法: 使用した手法・モデル・データ・実験設定などを具体的に説明してください。
+    - 結果: 得られた主な結果・数値・指標を具体的に記述してください。結果は1つだけ記述してください。
+    - 結論: 研究の結論・意義・今後の展望を簡潔にまとめてください。
+
+    【注意事項】
+    - 同じ内容を繰り返さないでください。重複する情報は1回だけ記述してください。
+    - 背景・手法・結果・結論の4セクションは、それぞれ異なる内容で記述してください。
+    - 背景: なぜこの研究が必要か、どのような問題を解決したいか
+    - 手法: どのような方法・モデル・データ・実験設定を使ったか
+    - 結果: どのような数値・指標・現象が得られたか
+    - 結論: その結果から何が言えるか、どのような意義があるか
+    - 抽象的な表現を避け、できるだけ具体的な数値・事実・用語を用いてください。
+    - 出力は日本語で行ってください。
     """
     
     # 時間計測

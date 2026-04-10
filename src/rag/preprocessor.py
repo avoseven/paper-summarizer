@@ -4,6 +4,9 @@ import re
 def remove_figures_and_references(text: str) -> str:
     """図の軸ラベル・キャプション・参考文献リスト・学会名を除去する（行単位）"""
     lines = text.split("\n")
+    #print("========================================")
+    #print(lines)
+    #print("========================================")
     cleaned_lines = []
     for line in lines:
         # 学会名・参考文献リストの行をスキップ
@@ -33,6 +36,15 @@ def remove_figures_and_references(text: str) -> str:
         #    continue
         #if re.search(r"©", line):
         #    continue
+        # \x00を除外
+        if re.search(r"\x00", line):
+            continue
+        # 行が数値のみ（空白を除く）はスキップ
+        stripped = line.strip()
+        if re.fullmatch(r"[-+]?\d*\.?\d+", stripped):
+            continue
+        if re.fullmatch(r"([-+]?\d*\.?\d+\s*)+", stripped):
+            continue
         cleaned_lines.append(line)
     return "\n".join(cleaned_lines)
 

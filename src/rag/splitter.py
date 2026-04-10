@@ -13,7 +13,8 @@ def split_documents(documents: List[Document], chunk_size: int = 1000) -> List[D
         chunk_size=chunk_size,      # 1チャンクあたりの文字数（引数で指定）
         chunk_overlap=200,    # チャンク間の重複文字数
         length_function=len,  # 文字数を数える関数
-        separators=["\n\n", "。", "．", "\n", " ", ""],  # 追加: 分割の優先順序
+        #separators=["\n\n", "。", "．", "\n", " ", ""],  # 追加: 分割の優先順序
+        separators=["\n\n", "\n", "．", "。", ".", " ", ""],  # 追加: 分割の優先順序
     )
 
     chunks = text_splitter.split_documents(documents)

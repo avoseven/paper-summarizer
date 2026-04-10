@@ -2,11 +2,13 @@
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 from typing import List
-from rag.embedder import get_embeddings  # embedder.pyを経由
+#from rag.embedder import get_embeddings  # embedder.pyを経由
+from .embedder import get_embeddings  # 相対インポートに変更
 
 def create_vectorstore(
         documents: List[Document],
         persist_directory: str = "./chroma_db",
+        collection_name: str = "langchain",  # 追加
         clear_existing: bool = True,
     ):
     """
@@ -17,13 +19,15 @@ def create_vectorstore(
 
     if clear_existing:
         # コレクションを削除して中身だけクリア
-        clear_vectorstore(persist_directory)
+        #clear_vectorstore(persist_directory)
+        clear_vectorstore(persist_directory, collection_name)  # collection_nameを渡す
     
     # ChromaDBにドキュメントを保存
     vectorstore = Chroma.from_documents(
         documents=documents,
         embedding=embeddings,
         persist_directory=persist_directory,
+        collection_name=collection_name,  # ここも追加
     )
     return vectorstore
 
@@ -39,7 +43,7 @@ def clear_vectorstore(persist_directory: str = "./chroma_db", collection_name: s
     ベクトルDBの中身（コレクション）をクリアする
     """
     import chromadb
-    from rag.embedder import get_embeddings
+    #from .embedder import get_embeddings
 
     embeddings = get_embeddings()
     
@@ -66,7 +70,7 @@ def get_vectorstore_count(persist_directory: str = "./chroma_db", collection_nam
     ベクトルDBのドキュメント数を取得する
     """
     import chromadb
-    from rag.embedder import get_embeddings
+    #from rag.embedder import get_embeddings
 
     embeddings = get_embeddings()
     

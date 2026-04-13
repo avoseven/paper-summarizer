@@ -1,9 +1,9 @@
 # src/main.py
 import streamlit as st
-from rag.loader import load_pdf_from_bytes
-from rag.splitter import split_documents
-from rag.vectorstore import create_vectorstore
-from rag.summarizer import summarize_with_rag
+from .rag.loader import load_pdf_from_bytes
+from .rag.splitter import split_documents
+from .rag.vectorstore import create_vectorstore
+from .rag.summarizer import summarize_with_rag
 
 def setup_ui():
     """UIを設定し、k, chunk_size, model_choice, output_lengthを返す"""

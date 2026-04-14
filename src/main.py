@@ -124,10 +124,11 @@ def main():
     uploaded_file = st.file_uploader("論文PDFをアップロード", type="pdf")
 
     # 評価モードONなら正解要約ファイルをアップロード
-    gold_summary_file = None
     if eval_mode:
         st.info("評価モード: 正解要約（テキストファイル）をアップロードしてください。")
         gold_summary_file = st.file_uploader("正解要約（.txt）", type=["txt"])
+    else:
+        gold_summary_file = None
 
     if uploaded_file is not None:
         # 質問入力

@@ -35,7 +35,7 @@ def summarize_with_rag(
     #relevant_docs = retriever.get_relevant_documents(query)
     #relevant_docs = retriever.invoke(query)  # get_relevant_documents → invoke
     # query改造
-    query = "背景 手法 結果 結論" + user_query
+    query = user_query + " 背景 手法 結果 結論"
     relevant_docs = retriever.invoke(query)  # get_relevant_documents → invoke
     print("=== Retrieved Chunks ===")
     for i, doc in enumerate(relevant_docs):
@@ -50,13 +50,10 @@ def summarize_with_rag(
     # プロンプトを作成（トークン数指定）
     prompt = f"""
     あなたは論文の要約を日本語で行う専門家です。
-    以下の論文の一部を読み、指定された形式で要約してください。
+    以下の論文の一部である入力テキストを読み、指定された形式で要約してください。
 
-    【入力テキスト】
-    {context}
-
-    下記の依頼者要望があればそれに沿って要約してください
-    【依頼者要望】
+    下記のキーワードがあれば必ずそれを含めて要約してください
+    【キーワード】
     {user_query}
 
     【出力形式】
@@ -70,13 +67,13 @@ def summarize_with_rag(
     【注意事項】
     - 同じ内容を繰り返さないでください。重複する情報は1回だけ記述してください。
     - 背景・手法・結果・結論の4セクションは、それぞれ異なる内容で記述してください。
-    - 背景: なぜこの研究が必要か、どのような問題を解決したいか
-    - 手法: どのような方法・モデル・データ・実験設定を使ったか
-    - 結果: どのような数値・指標・現象が得られたか
-    - 結論: その結果から何が言えるか、どのような意義があるか
     - 抽象的な表現を避け、できるだけ具体的な数値・事実・用語を用いてください。
     - 出力は日本語で行ってください。
+
+    【入力テキスト】
+    {context}
     """
+    #print(f"{prompt=}")
     
     # 時間計測
     start_time = time.time()

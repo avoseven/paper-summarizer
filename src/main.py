@@ -125,16 +125,17 @@ def main():
 
     # 評価モードONなら正解要約ファイルをアップロード
     if eval_mode:
-        st.info("評価モード: 正解要約（テキストファイル）をアップロードしてください。")
         gold_summary_file = st.file_uploader("正解要約（.txt）", type=["txt"])
+        status_gold = st.info("評価モード: 正解要約（テキストファイル）をアップロードしてください。")
+        if gold_summary_file is not None: status_gold.empty()
     else:
         gold_summary_file = None
 
     if uploaded_file is not None:
         # 質問入力
         query = st.text_input(
-            "質問を入力してください（例：この論文の手法を要約して）",
-            value="この論文の内容を要約してください"
+            "注目したいキーワードがあれば入力してください（例：手法 車いすテニス 深層学習）",
+            value=""
         )
 
         # 要約実行

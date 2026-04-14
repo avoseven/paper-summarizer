@@ -19,7 +19,7 @@ def get_llm(model_name: str = "llama3.2:1b", num_predict: int = 512) -> OllamaLL
 
 def summarize_with_rag(
     vectorstore, 
-    query: str, 
+    user_query: str, 
     model_name: str = "llama3.2:1b", 
     num_predict: int = 512,
     k: int = 3
@@ -33,6 +33,9 @@ def summarize_with_rag(
     #retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
     retriever = vectorstore.as_retriever(search_kwargs={"k": k})
     #relevant_docs = retriever.get_relevant_documents(query)
+    #relevant_docs = retriever.invoke(query)  # get_relevant_documents → invoke
+    # query改造
+    query = "背景 手法 結果 結論" + user_query
     relevant_docs = retriever.invoke(query)  # get_relevant_documents → invoke
     print("=== Retrieved Chunks ===")
     for i, doc in enumerate(relevant_docs):
@@ -54,7 +57,7 @@ def summarize_with_rag(
 
     下記の依頼者要望があればそれに沿って要約してください
     【依頼者要望】
-    {query}
+    {user_query}
 
     【出力形式】
     以下の4つのセクションのみを記述してください。見出しや番号は含めないでください。

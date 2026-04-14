@@ -1,9 +1,11 @@
 # src/main.py
 import streamlit as st
-from .rag.loader import load_pdf_from_bytes
-from .rag.splitter import split_documents
-from .rag.vectorstore import create_vectorstore
-from .rag.summarizer import summarize_with_rag
+from rag.loader import load_pdf_from_bytes
+from rag.splitter import split_documents
+from rag.vectorstore import create_vectorstore
+from rag.summarizer import summarize_with_rag
+
+from eval.rouge_evaluator import RougeEvaluator  # 追加
 
 def setup_ui():
     """UIを設定し、k, chunk_size, model_choice, output_lengthを返す"""
@@ -53,10 +55,19 @@ def setup_ui():
             step=512,
             help="短いほど速いが簡潔、長いほど遅いが詳細"
         )
+    # 評価モードのチェックボックス（サイドバー or メインに配置）
+    eval_mode = st.checkbox(
+        "📊 評価モード（ROUGE）",
+        value=False,
+        help="ONにすると、正解要約をアップロードしてROUGEスコアを計算します"
+    )
 
-    return k, chunk_size, model_choice, output_length
+    return k, chunk_size, model_choice, output_length, eval_mode
 
-def run_summary_pipeline(uploaded_file, k, chunk_size, model_choice, output_length, query) -> None:
+def run_summary_pipeline(
+        uploaded_file, k, chunk_size, model_choice, output_length, query,
+        eval_mode=False, gold_summary_file=None
+    ) -> None:
     """PDF読み込みから要約までの一連の処理を実行する"""
 
     # ステータス表示用の空のUI要素
@@ -92,12 +103,31 @@ def run_summary_pipeline(uploaded_file, k, chunk_size, model_choice, output_leng
     st.subheader("要約結果")
     st.write(summary)
 
+    # 5. 評価モードONならROUGEスコアを計算・表示
+    if eval_mode and gold_summary_file is not None:
+        with st.spinner("ROUGEスコアを計算中..."):
+            # 正解要約を読み込み
+            gold_summary = gold_summary_file.getvalue().decode("utf-8")
+
+            # ROUGEスコア計算
+            evaluator = RougeEvaluator()
+            scores = evaluator.compute_scores(gold_summary, summary)
+
+        st.subheader("📊 ROUGEスコア")
+        st.json(scores)  # または表形式で表示
+
 def main():
     # UI
-    k, chunk_size, model_choice, output_length = setup_ui()
+    k, chunk_size, model_choice, output_length, eval_mode = setup_ui()
 
     # PDFアップロード
     uploaded_file = st.file_uploader("論文PDFをアップロード", type="pdf")
+
+    # 評価モードONなら正解要約ファイルをアップロード
+    gold_summary_file = None
+    if eval_mode:
+        st.info("評価モード: 正解要約（テキストファイル）をアップロードしてください。")
+        gold_summary_file = st.file_uploader("正解要約（.txt）", type=["txt"])
 
     if uploaded_file is not None:
         # 質問入力
@@ -109,7 +139,10 @@ def main():
         # 要約実行
         if st.button("要約を実行"):
 
-            run_summary_pipeline(uploaded_file, k, chunk_size, model_choice, output_length, query)
+            run_summary_pipeline(
+                uploaded_file, k, chunk_size, model_choice, output_length, query,
+                eval_mode, gold_summary_file
+            )
 
 if __name__ == "__main__":
     main()

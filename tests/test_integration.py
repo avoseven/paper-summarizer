@@ -1,5 +1,4 @@
 # tests/test_integration.py
-import pytest
 from unittest.mock import MagicMock, patch
 from src.main import run_summary_pipeline
 

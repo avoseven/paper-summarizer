@@ -213,12 +213,27 @@ clear_vectorstore()
 
 Streamlit UI からも、実行時に自動的にクリアされるようになっています。
 
-## テストの実行（予定）
+## テストの実行
 
-テストはまだ実装されていませんが、将来的には以下のコマンドで実行する予定です。
+本プロジェクトでは、RAGパイプラインの主要な処理を対象に、以下のテストを実装しています。
+
+- `tests/test_eval.py`：RougeEvaluatorによる要約結果の評価をテスト
+- `tests/test_integration.py`：LLM部分をモック化して、RAGパイプライン全体が正しく動くか確認するテスト
+- `tests/test_loader.py`：load_pdf_from_bytesが空でないDocumentリストを返すことを確認
+- `tests/test_splitter.py`
+   - split_documentsが空でないDocumentリストを返すことを確認
+   - 分割後のチャンク数が増えることを確認
+   - chunk_sizeがおおむね守られていることを確認
+   - デフォルトchunk_size(1000)が使われることを確認
+- `tests/test_vectorstore.py`
+   - create_vectorstoreがドキュメントを正しく保存することを確認
+   - search_similar_chunksが関連ドキュメントを返すことを確認
+   - clear_vectorstoreでコレクションがクリアされることを確認
+
+### 実行方法
 
 ```bash
-docker compose run --rm app python -m pytest
+docker compose run test
 ```
 
 ## CI（予定）

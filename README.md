@@ -249,8 +249,7 @@ paper-summarizer/
 
 ## DBの中身をクリアする方法
 
-`vectorstore.py` の `clear_vectorstore` 関数を利用すると、  
-**DBファイルを削除せずに、中身だけをクリア**できます。
+`vectorstore.py` の `clear_vectorstore` 関数を利用すると，DBファイルを削除せずに中身だけをクリアできる
 
 ```python
 from src.rag.vectorstore import clear_vectorstore
@@ -258,14 +257,14 @@ from src.rag.vectorstore import clear_vectorstore
 clear_vectorstore()
 ```
 
-Streamlit UI からも、実行時に自動的にクリアされるようになっています。
+Streamlit UI から実行する際は，実行時に自動的にクリアされるようになっている
 
 ## テストの実行
 
-本プロジェクトでは、RAGパイプラインの主要な処理を対象に、以下のテストを実装しています。
+RAGパイプラインの主要な処理を対象に，以下のテストを実装
 
 - `tests/test_eval.py`：RougeEvaluatorによる要約結果の評価をテスト
-- `tests/test_integration.py`：LLM部分をモック化して、RAGパイプライン全体が正しく動くか確認するテスト
+- `tests/test_integration.py`：LLM部分をモック化して，RAGパイプライン全体が正しく動くか確認するテスト
 - `tests/test_loader.py`：load_pdf_from_bytesが空でないDocumentリストを返すことを確認
 - `tests/test_splitter.py`
    - split_documentsが空でないDocumentリストを返すことを確認
@@ -287,7 +286,7 @@ docker compose run test
 
 ## CI (Continuous Integration)
 
-本プロジェクトでは、GitHub Actions によるCIを設定しています。
+GitHub Actions によるCIを設定
 
 - ワークフローファイル：`.github/workflows/test.yml`
 - 実行内容：

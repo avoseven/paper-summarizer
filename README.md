@@ -21,11 +21,13 @@ RAG + LangChain を用いて，PDF論文を自動要約するツール
 ## 技術スタック
 
 - Python
-- LangChain
-- Streamlit
-- ChromaDB
+- LangChain (RAG Framework)
+- Streamlit (Web UI)
+- ChromaDB (Vector Database)
+- Rouge (評価指標)
 - Ollama（ローカルLLM: llama）
 - Docker / Docker Compose
+- pytest / GitHub Actions
 
 ## セットアップ
 

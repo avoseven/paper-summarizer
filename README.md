@@ -1,16 +1,22 @@
 # paper-summarizer
 
-RAG + LangChain を用いて、PDF論文を自動要約するツールです。  
-ローカルLLM（llama）を利用し、Docker Compose で簡単に実行できます。
+RAG + LangChain を用いて，PDF論文を自動要約するツール
+ローカルLLM（llama）を利用し，Docker Compose で実行
 
 ## 主な機能
 
-- PDF論文の読み込みとテキスト抽出
-- テキストのチャンキングとベクトル化（RAG）
-- ベクトルDB（ChromaDB）による関連文書の検索
-- LLM（llama）による論文要約（背景・手法・結果・結論の4セクション）
-- Streamlit によるWeb UI
-- Docker Compose によるコンテナ化
+- **PDF抽出**：PDF論文を読み込み，テキストデータに変換（`src/rag/loader.py`）
+- **チャンキング**：テキストを一定のサイズ（chunk_size）で分割し，RAG用のチャンクを生成（`src/rag/splitter.py`）
+- **ベクトル検索**：チャンクを埋め込みベクトルに変換し，ChromaDBに保存・検索（`src/rag/vectorstore.py`）
+- **LLM要約**：Ollama（llama）を用いて，RAGで取得したチャンクをもとに論文を要約（`src/rag/summarizer.py`）
+(要約は「背景」「手法」「結果」「結論」の4セクションで出力するよう内部Promptで指示)
+- **前処理**：図表周りの文字や脚注，参考文献リストなど，一部不要な部分を除去（`src/rag/preprocessor.py`）
+(ただし，完全に不要部分を除去できているわけではない)
+- **Rouge評価**：生成された要約とゴールドスタンダード要約を比較し，ROUGEスコア（rouge1, rouge2, rougeL）を計算（`src/eval/rouge_evaluator.py`）
+- **評価モード**：Streamlit UIからゴールドスタンダード要約ファイルをアップロードし，評価モードで要約を生成すると，ROUGEスコアを自動で計算
+- **UI（Streamlit）**：ブラウザ上からPDFをアップロードし，RAGパラメータ（k, chunk_size）やModel選択を調整しながら要約を生成可能
+- **コンテナ化（Docker）**：Docker Compose を用いて環境を構築し，誰でも同じ環境でツールを実行可能
+- **テスト・CI**：RAGパイプラインやROUGE評価のテストを実装し，GitHub Actions によるCIで自動実行
 
 ## 技術スタック
 
@@ -84,7 +90,7 @@ docker compose run summarizer
    - 制限はありませんが，長くなると精度が落ちる可能性があります
    - 必ず要約に反映されるとは限りません
 
-5. 要約を実行
+6. 要約を実行
    - 「要約を実行」ボタンをクリックすると，LLM（Ollama）による要約が開始されます
    - 完了すると，要約時間・要約文・評価モードならRouge-scoreが表示されます
 

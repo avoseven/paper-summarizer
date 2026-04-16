@@ -60,15 +60,30 @@ docker compose up --build
 
 ## プロジェクト構成
 ```
-src/
-├── rag/
-│ ├── loader.py # PDF読み込み
-│ ├── splitter.py # テキスト分割（チャンキング）
-│ ├── embedder.py # 埋め込み生成
-│ ├── vectorstore.py # ベクトルDB（ChromaDB）の操作
-│ └── summarizer.py # LLMによる要約
-├── main.py # Streamlit UI
-└── ... # その他のファイル（将来的に config.py を追加予定）
+paper-summarizer/
+├── src/
+│   ├── __init__.py
+│   ├── main.py # Streamlit UI
+│   ├── rag/
+│   │   ├── __init__.py
+│   │   ├── loader.py       # PDF読み込み
+│   │   ├── preprocessor.py # 前処理
+│   │   ├── splitter.py     # テキスト分割（チャンキング）
+│   │   ├── embedder.py     # 埋め込み生成
+│   │   ├── vectorstore.py  # ベクトルDB（ChromaDB）の操作
+│   │   └── summarizer.py   # LLMによる要約
+│   └── eval/
+│       └── rouge_evaluator.py   # Rouge-scoreによる評価
+├── tests/
+│   ├── __init__.py
+│   ├── test_integration.py  # RAGパイプラインの結合テスト
+│   ├── test_eval.py         # ROUGE評価のテスト
+│   ├── test_loader.py       # PDF読み込みのテスト
+│   ├── test_vectorstore.py  # Vector化のテスト
+│   └── test_splitter.py     # チャンク分割のテスト
+├── .github/workflows/
+│   └── test.yml             # GitHub Actions のCI設定
+└── README.md
 ```
 
 ### RAGパイプライン
@@ -238,7 +253,7 @@ docker compose run test
 
 これにより，`tests/` 配下のテストが自動で実行されます
 
-## CI
+## CI (Continuous Integration)
 
 本プロジェクトでは、GitHub Actions によるCIを設定しています。
 

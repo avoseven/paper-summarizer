@@ -101,6 +101,50 @@ GoldStandard要約をアップロードして実行，完了するとRouge-score
 
 <img src="docs/images/ui-eval.png" alt="評価Mode" width="600" style="border: 2px solid white;" />
 
+## アーキテクチャ図
+
+```mermaid
+flowchart TD
+    A[PDFファイル] --> B[PDF抽出<br/>PyPDFLoader]
+    B --> C[テキストチャンキング<br/>LangChain TextSplitter]
+    C --> D[埋め込み生成<br/>Ollama Embeddings]
+    D --> E[ベクトルDB<br/>ChromaDB]
+    E --> F[ベクトル検索<br/>k近傍検索]
+    F --> G[LLM要約<br/>Ollama llama3.1:8b]
+    G --> H[要約結果表示<br/>Streamlit UI]
+    G --> I[評価・実験<br/>Rouge Evaluator]
+```
+
+```mermaid
+flowchart LR
+    A[PDFファイル] --> B[PDF抽出]
+    B --> C[テキストチャンキング]
+    C --> D[埋め込み生成]
+    D --> E[ベクトルDB]
+    E --> F[ベクトル検索]
+    F --> G[LLM要約]
+    G --> H[要約結果表示]
+```
+
+```mermaid
+flowchart TD
+    subgraph Preprocessing[前処理]
+        direction LR
+        A[PDFファイル] --> B[PDF抽出]
+        B --> C[テキストチャンキング]
+        C --> D[埋め込み生成]
+    end
+
+    subgraph RAG[RAGパイプライン]
+        direction LR
+        E[ベクトルDB] --> F[ベクトル検索]
+        F --> G[LLM要約]
+        G --> H[要約結果表示]
+    end
+
+    D --> E
+```
+
 ## プロジェクト構成
 ```
 paper-summarizer/
@@ -154,6 +198,10 @@ paper-summarizer/
 ## 評価・実験結果
 
 RAG + LangChain + Ollama による論文要約の精度・挙動を評価するため，以下の実験を実施
+
+時間や要約文の質には揺れがあるため，5回の平均をとっている
+
+実験ごとに実際の要約例を折りたたみ形式で掲載
 
 ### 1. モデル比較（1B vs 8B）
 
@@ -362,18 +410,16 @@ RAG + LangChain + Ollama による論文要約の精度・挙動を評価する�
 
 ### 元論文
 要約に使用した元論文は下記の通り
-1. 深層強化学習による車いすテニスの漕ぎ動作生成シミュレーション
+1. 深層強化学習による車いすテニスの漕ぎ動作生成シミュレーション (上記実験1 ~ 4と，5の4Pで使用)
    - https://www.jstage.jst.go.jp/article/sit/2025/0/2025_P-1-15/_article/-char/ja/
-   - 上記実験1 ~ 4と，5の4Pで使用
-2. 燃料電池システムにおける一次元加湿器モデルの構築
+2. 燃料電池システムにおける一次元加湿器モデルの構築 (上記実験5の10Pで使用)
    - https://www.jstage.jst.go.jp/article/hondatechnicalreview/37/0/37_2025_37_8/_article/-char/ja
-   - 上記実験5の10Pで使用
 
 なお，tests/fixtureにも保存してある (それぞれ2025_P-1-15.pdf, 37_08.pdf)
 
 ## 今後の課題
 
-本プロジェクトでは、以下の課題が残っており、今後の改善の方向性として検討しています。
+以下の課題が残っており，今後の改善の方向性として検討
 
 ### 1. セクションと内容の不一致への対策
 
@@ -402,6 +448,7 @@ RAG + LangChain + Ollama による論文要約の精度・挙動を評価する�
 - より大きなモデル（13B, 70B）での精度・速度・リソースのトレードオフ評価
 - マルチモーダル対応（図表のキャプション抽出など）による要約の質向上
 - 自動評価指標の拡充（Rouge以外に、BERTScoreやLLMベースの評価など）
+- どのチャンクを参照して要約したかをハイライト表示
 
 ## DBの中身をクリアする方法
 

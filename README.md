@@ -84,6 +84,18 @@ docker compose up summarizer
    - 「要約を実行」ボタンをクリックすると，LLM（Ollama）による要約が開始されます
    - 完了すると，要約時間・要約文・評価モードならRouge-scoreが表示されます
 
+## UI Image
+
+### Top画面
+
+<img src="docs/images/ui-top.png" alt="Top画面" width="600" />
+
+### 要約結果
+<img src="docs/images/ui-summary.png" alt="要約結果" width="600" />
+
+### 評価Mode
+<img src="docs/images/ui-eval.png" alt="評価Mode" width="600" />
+
 ## プロジェクト構成
 ```
 paper-summarizer/

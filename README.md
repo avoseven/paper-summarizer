@@ -7,7 +7,8 @@ RAG + LangChain を用いて，PDF論文を自動要約するツール
 
 - **PDF抽出**：PDF論文を読み込み，テキストデータに変換（`src/rag/loader.py`）
 - **チャンキング**：テキストを一定のサイズ（chunk_size）で分割し，RAG用のチャンクを生成（`src/rag/splitter.py`）
-- **ベクトル検索**：チャンクを埋め込みベクトルに変換し，ChromaDBに保存・検索（`src/rag/vectorstore.py`）
+- **埋め込み生成**：チャンクを埋め込みベクトルに変換し，RAG用のベクトル表現を生成（`src/rag/embedder.py`）
+- **ベクトル検索**：埋め込みベクトルをChromaDBに保存し，クエリに基づいて類似チャンクを検索（`src/rag/vectorstore.py`）
 - **LLM要約**：Ollama（llama）を用いて，RAGで取得したチャンクをもとに論文を要約（`src/rag/summarizer.py`）
 (要約は「背景」「手法」「結果」「結論」の4セクションで出力するよう内部Promptで指示)
 - **前処理**：図表周りの文字や脚注，参考文献リストなど，一部不要な部分を除去（`src/rag/preprocessor.py`）

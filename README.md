@@ -104,45 +104,14 @@ GoldStandard要約をアップロードして実行，完了するとRouge-score
 ## アーキテクチャ図
 
 ```mermaid
-flowchart TD
-    A[PDFファイル] --> B[PDF抽出<br/>PyPDFLoader]
-    B --> C[テキストチャンキング<br/>LangChain TextSplitter]
-    C --> D[埋め込み生成<br/>Ollama Embeddings]
-    D --> E[ベクトルDB<br/>ChromaDB]
-    E --> F[ベクトル検索<br/>k近傍検索]
-    F --> G[LLM要約<br/>Ollama llama3.1:8b]
-    G --> H[要約結果表示<br/>Streamlit UI]
-    G --> I[評価・実験<br/>Rouge Evaluator]
-```
-
-```mermaid
 flowchart LR
-    A[PDFファイル] --> B[PDF抽出]
-    B --> C[テキストチャンキング]
-    C --> D[埋め込み生成]
+    A[PDF] --> B[抽出]
+    B --> C[チャンキング]
+    C --> D[埋め込み]
     D --> E[ベクトルDB]
-    E --> F[ベクトル検索]
+    E --> F[検索]
     F --> G[LLM要約]
-    G --> H[要約結果表示]
-```
-
-```mermaid
-flowchart TD
-    subgraph Preprocessing[前処理]
-        direction LR
-        A[PDFファイル] --> B[PDF抽出]
-        B --> C[テキストチャンキング]
-        C --> D[埋め込み生成]
-    end
-
-    subgraph RAG[RAGパイプライン]
-        direction LR
-        E[ベクトルDB] --> F[ベクトル検索]
-        F --> G[LLM要約]
-        G --> H[要約結果表示]
-    end
-
-    D --> E
+    G --> H[UI]
 ```
 
 ## プロジェクト構成

@@ -38,25 +38,12 @@ git clone https://github.com/avoseven/paper-summarizer.git
 cd paper-summarizer
 ```
 
-### 2. 環境変数の設定
-
-`.env.example` をコピーして `.env` を作成します。
-
-```bash
-cp .env.example .env
-必要に応じて、以下の環境変数を設定してください。
-```
-
-- `OLLAMA_BASE_URL`: OllamaサーバーのURL（例: `http://host.docker.internal:11434`）  
-  ※ホスト側でOllamaを起動しておく必要があります
-- その他，必要に応じて追加
-
-### 3. Docker Compose で起動
+### 2. Docker Compose で起動
 
 ```bash
 docker compose up --build
 ```
-起動後，ブラウザで `http://localhost:8501` にアクセスすると，Streamlit UI が表示されます
+Streamlitが起動するので，ブラウザで `http://localhost:8501` にアクセス
 
 ## 使用方法
 

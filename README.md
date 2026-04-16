@@ -41,7 +41,7 @@ cd paper-summarizer
 ### 2. Docker Compose で起動
 
 ```bash
-docker compose up --build
+docker compose up --build summarizer
 ```
 Streamlitが起動するので，ブラウザで `http://localhost:8501` にアクセス
 
@@ -49,7 +49,7 @@ Streamlitが起動するので，ブラウザで `http://localhost:8501` にア�
 
 1. Streamlitアプリの起動
 ```bash
-docker compose run summarizer
+docker compose up summarizer
 ```
 ブラウザで `http://localhost:8501` にアクセスすると，論文要約ツールのUIが表示されます
 
@@ -90,7 +90,6 @@ paper-summarizer/
 ├── docker-compose.yml
 ├── requirements.txt
 ├── requirements-dev.txt
-├── .env.example
 ├── .gitignore
 ├── README.md
 ├── src/

@@ -40,23 +40,53 @@ cp .env.example .env
 ```
 
 - `OLLAMA_BASE_URL`: OllamaサーバーのURL（例: `http://host.docker.internal:11434`）  
-  ※ホスト側でOllamaを起動しておく必要があります。
-- その他、必要に応じて追加
+  ※ホスト側でOllamaを起動しておく必要があります
+- その他，必要に応じて追加
 
 ### 3. Docker Compose で起動
 
 ```bash
 docker compose up --build
 ```
-起動後、ブラウザで http://localhost:8501 にアクセスすると、Streamlit UI が表示されます。
+起動後，ブラウザで `http://localhost:8501` にアクセスすると，Streamlit UI が表示されます
 
 ## 使用方法
 
-1. `data/` ディレクトリに要約したいPDF論文を配置します。
-2. Streamlit UI で以下のパラメータを調整できます。
-   - `k`: 検索するチャンク数（例: 3〜10）
-   - `chunk_size`: チャンクのサイズ（例: 800〜2000）
-3. 「要約を生成」ボタンをクリックすると、論文要約が生成されます。
+1. Streamlitアプリの起動
+```bash
+docker compose run summarizer
+```
+ブラウザで `http://localhost:8501` にアクセスすると，論文要約ツールのUIが表示されます
+
+2. RAGパラメータの調整
+   - 検索チャンク数 (k)：RAGで検索するチャンク数を指定（Default：6）
+   - チャンクサイズ (chunk_size)：PDFを分割する際の1チャンクあたりの文字数を指定（Default：1000）
+   - 出力長 (トークン数)：出力Textの長さ上限を指定 (Default：1024)
+
+これらのパラメータを変更すると，要約の精度や速度に影響します．詳細は「評価・実験結果」セクションを参照
+
+3. Model選択
+   - llama3.2:1b：比較的高速だが低精度
+   - llama3.1:8b：比較的高精度だが低速
+   - (llama3.1:8b-istruct-q4_1)
+
+3. PDF論文をアップロード
+
+4. 評価モード（任意）
+   - 評価モード (ROUGE)：チェックを入れると，評価モードが有効になります
+   - 正解要約 (.txt)：正解要約（ゴールドスタンダード）のテキストファイルをアップロードしてください
+
+評価モードでは，生成された要約とゴールドスタンダード要約を比較し，ROUGEスコア（rouge1, rouge2, rougeL）を計算します
+
+5. Keyword入力 (任意)
+   - 注目したい単語があれば入力してください
+   - RAG検索時に，user_queryとして追加されます
+   - 制限はありませんが，長くなると精度が落ちる可能性があります
+   - 必ず要約に反映されるとは限りません
+
+5. 要約を実行
+   - 「要約を実行」ボタンをクリックすると，LLM（Ollama）による要約が開始されます
+   - 完了すると，要約時間・要約文・評価モードならRouge-scoreが表示されます
 
 ## プロジェクト構成
 ```
@@ -89,9 +119,8 @@ paper-summarizer/
 │   ├── test_loader.py       # PDF読み込みのテスト
 │   ├── test_vectorstore.py  # Vector化のテスト
 │   └── test_splitter.py     # チャンク分割のテスト
-├── .github/workflows/
-│   └── test.yml             # GitHub Actions のCI設定
-└── README.md
+└── .github/workflows/
+    └── test.yml             # GitHub Actions のCI設定
 ```
 
 ### RAGパイプライン
